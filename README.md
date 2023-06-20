@@ -41,6 +41,8 @@ Currently it consists of the following features:
 - Delete ticks.
 - Add empty tick rows at the end of the macro.
 - Save macros with a given name.
+- View all saved macros.
+- Load any saved macros.
 
 # Actions
 
