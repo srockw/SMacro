@@ -2,7 +2,7 @@
   "name": "SMacro",
   "creator": "Srock",
   "entry": "index.js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Tool for creating MC macros, meant for Parkour.",
   "requires": ["sillycommand", "mappings", "Elementa", "PogData"]
 }
