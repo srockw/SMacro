@@ -12,22 +12,22 @@ export const Stop = createSimpleCommand(tick => tick.clear(), 1, 0, "stop", "st"
 // Jump commands
 export const Walkjump = createSimpleCommand(
     (tick, index) => index == 0 ? tick.setJump(true) : tick,
-    12, 0, "walkjump", "wj"
+    1, 0, "walkjump", "wj"
 );
 
 export const Sprintjump = createSimpleCommand(
     (tick, index) => index == 0 ? tick.setSprint(true).setJump(true) : tick.setSprint(true),
-    12, 0, "sprintjump", "sj"
+    1, 0, "sprintjump", "sj"
 );
 
 export const Sneakjump = createSimpleCommand(
     (tick, index) => index == 0 ? tick.setSneak(true).setJump(true) : tick.setSneak(true),
-    12, 0, "sneakjump", "snj"
+    1, 0, "sneakjump", "snj"
 );
 
 export const Sneaksprintjump = createSimpleCommand(
     (tick, index) => index == 0 ? tick.setSneak(true).setSprint(true).setJump(true) : tick.setSneak(true).setSprint(true),
-    12, 0, "sneaksprintjump", "snsj"
+    1, 0, "sneaksprintjump", "snsj"
 );
 
 export const Stopjump = createSimpleCommand(
@@ -36,7 +36,7 @@ export const Stopjump = createSimpleCommand(
 );
 
 // Complex commands
-export const sprintjump45 = new Command((duration = 12, shift = 0) => {
+export const sprintjump45 = new Command((duration = 1, shift = 0) => {
     const main = [];
 
     for (let i = 0; i < duration; i++) {

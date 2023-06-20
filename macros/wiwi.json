@@ -1,0 +1,31 @@
+{
+    "name": "wiwi",
+    "ticks": [
+        [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            0,
+            0
+        ],
+        [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            0,
+            0
+        ]
+    ]
+}

@@ -1,9 +1,8 @@
-import { AdditiveConstraint, CenterConstraint, ConstantColorConstraint, FillConstraint, ScrollComponent, SiblingConstraint, SubtractiveConstraint, UIContainer, UIRoundedRectangle, UIText, WindowScreen } from "../../Elementa"
-import Command from "../commands/command";
+import { AdditiveConstraint, CenterConstraint, ConstantColorConstraint, FillConstraint, ScrollComponent, SiblingConstraint, SubtractiveConstraint, UIContainer, UIRoundedRectangle, UIText, UITextInput, WindowScreen } from "../../Elementa"
 import Macro from "../macro"
 import { animateColorTransition, loadKeys } from "../utils";
-import { ADD_COLOR, ADD_HOVER_COLOR, BACKGROUND_COLOR, BACKGROUND_COLOR_BRIGHT, FLOAT_PADDING, INPUT_LIST_PADDING, ROUNDED_RADIUS, TICK_LIST_PADDING } from "./constants";
-import InputCard from "./inputCard";
+import { ADD_COLOR, ADD_HOVER_COLOR, BACKGROUND_COLOR, BACKGROUND_COLOR_BRIGHT, BACKGROUND_COLOR_DARK, FLOAT_PADDING, INPUT_LIST_PADDING, NAME_ALLOWED_CHARS_REGEX, ROUNDED_RADIUS, SAVE_COLOR, SAVE_HOVER_COLOR, TICK_LIST_PADDING } from "./constants";
+import MacroCard from "./macroCard";
 import TickColumnLabel from "./tickColumnLabel";
 import TickRow from "./tickRow";
 
@@ -18,12 +17,12 @@ export const Editor = new JavaAdapter(WindowScreen, {
     FloatingMacro: new UIRoundedRectangle(ROUNDED_RADIUS),
     TicksScroller: new ScrollComponent("Empty Macro :("),
 
-    FloatingInputContainer: new UIContainer(),
+    FloatingControlContainer: new UIContainer(),
 
     FloatingMacroControl: new UIRoundedRectangle(ROUNDED_RADIUS),
-    FloatingInputList: new UIRoundedRectangle(ROUNDED_RADIUS),
+    FloatingMacroList: new UIRoundedRectangle(ROUNDED_RADIUS),
 
-    InputListScroll: new ScrollComponent("No inputs? That is odd."),
+    MacroListScroll: new ScrollComponent("No macros saved."),
 
     init() {
         this.FloatingMainContainer
@@ -39,7 +38,7 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setColor(new ConstantColorConstraint(BACKGROUND_COLOR))
             .setChildOf(this.FloatingMainContainer);
 
-        this.FloatingInputContainer
+        this.FloatingControlContainer
             .setX(new SiblingConstraint(FLOAT_PADDING))
             .setWidth(new SubtractiveConstraint(
                 new FillConstraint(),
@@ -52,9 +51,9 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setWidth((100).percent())
             .setHeight((40).percent())
             .setColor(new ConstantColorConstraint(BACKGROUND_COLOR))
-            .setChildOf(this.FloatingInputContainer);
+            .setChildOf(this.FloatingControlContainer);
 
-        this.FloatingInputList
+        this.FloatingMacroList
             .setY(new SiblingConstraint(FLOAT_PADDING))
             .setWidth((100).percent())
             .setHeight(new SubtractiveConstraint(
@@ -62,10 +61,10 @@ export const Editor = new JavaAdapter(WindowScreen, {
                 FLOAT_PADDING.pixels()
             ))
             .setColor(new ConstantColorConstraint(BACKGROUND_COLOR))
-            .setChildOf(this.FloatingInputContainer);
+            .setChildOf(this.FloatingControlContainer);
 
-        this.initInputListScroll();
-        this.updateInputList();
+        this.initMacroList();
+        this.updateMacroList();
 
         this.initMacroControl();
         this.initMacroScroll();
@@ -91,14 +90,14 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setChildOf(this.FloatingMacro)
     },
 
-    initInputListScroll() {
-        const InputListText = new UIText("List of Inputs")
+    initMacroList() {
+        const InputListText = new UIText("Saved Macros")
             .setX(new CenterConstraint())
             .setY(INPUT_LIST_PADDING.pixels())
             .setTextScale((1.5).pixels())
-            .setChildOf(this.FloatingInputList)
+            .setChildOf(this.FloatingMacroList)
 
-        this.InputListScroll
+        this.MacroListScroll
             .setX(new CenterConstraint())
             .setY(new SiblingConstraint(INPUT_LIST_PADDING))
             .setWidth((90).percent())
@@ -106,7 +105,7 @@ export const Editor = new JavaAdapter(WindowScreen, {
                 new FillConstraint(),
                 (INPUT_LIST_PADDING * 3).pixels()
             ))
-            .setChildOf(this.FloatingInputList)
+            .setChildOf(this.FloatingMacroList)
     },
 
     initMacroControl() {
@@ -121,6 +120,68 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setColor(BACKGROUND_COLOR_BRIGHT)
             .setChildOf(this.FloatingMacroControl);
 
+        const TextInputContainer = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
+            .setX(new CenterConstraint())
+            .setY(new AdditiveConstraint(
+                new SiblingConstraint(),
+                (FLOAT_PADDING / 2).pixels()
+            ))
+            .setWidth((90).percent())
+            .setHeight(new SubtractiveConstraint(
+                (50).percent(),
+                FLOAT_PADDING.pixels()
+            ))
+            .setColor(BACKGROUND_COLOR_DARK)
+            .onMouseClick(() => MacroNameInput.grabWindowFocus())
+            .setChildOf(TopControl);
+
+        let macroNameState = "";
+
+        const MacroNameInput = new UITextInput("Macro name...")
+            .setX(new CenterConstraint())
+            .setY(new CenterConstraint())
+            .setWidth((90).percent())
+            .setHeight((9).pixels())
+            .onKeyType((comp, char, keyCode) => {
+                // 14 is backspace
+                if (!NAME_ALLOWED_CHARS_REGEX.test(char) && keyCode != 14) {
+                    comp.setText(macroNameState);
+                }
+
+                macroNameState = comp.getText();
+            })
+            .onFocusLost((comp) => {
+                if (!macroNameState) {
+                    const name = Macro.ensureValidMacroName(macroNameState);
+                    macroNameState = name;
+                    comp.setText(name);
+                }
+            })
+            .setChildOf(TextInputContainer);
+
+        const SaveButton = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
+            .setX(new CenterConstraint())
+            .setY(new SiblingConstraint(FLOAT_PADDING / 2))
+            .setWidth((90).percent())
+            .setHeight(new SubtractiveConstraint(
+                new FillConstraint(),
+                (FLOAT_PADDING * 1.5).pixels()
+            ))
+            .setColor(SAVE_COLOR)
+            .onMouseEnter(comp => animateColorTransition(comp, SAVE_HOVER_COLOR))
+            .onMouseLeave(comp => animateColorTransition(comp, SAVE_COLOR))
+            .onMouseClick(() => {
+                this.Macro.setName(macroNameState).save();
+                this.onMacroUpdate(this.Macro);
+                this.updateMacroList();
+            })
+            .setChildOf(TopControl);
+
+        const SaveText = new UIText("Save macro")
+            .setX(new CenterConstraint())
+            .setY(new CenterConstraint())
+            .setChildOf(SaveButton);
+
         const BottomControl = new UIRoundedRectangle(ROUNDED_RADIUS)
             .setX(new CenterConstraint())
             .setY(new SiblingConstraint(FLOAT_PADDING / 2))
@@ -132,7 +193,7 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setColor(BACKGROUND_COLOR_BRIGHT)
             .setChildOf(this.FloatingMacroControl);
 
-        const AddEmptyRow = new UIRoundedRectangle(ROUNDED_RADIUS)
+        const AddEmptyRow = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
             .setX(new CenterConstraint())
             .setY(new CenterConstraint())
             .setWidth((90).percent())
@@ -142,8 +203,8 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .onMouseLeave(comp => animateColorTransition(comp, ADD_COLOR))
             .onMouseClick(() => {
                 this.Macro.addTick();
-                this.onMacroUpdate(this.Macro);
-                this.updateTickList();
+                this.onMacroUpdate(this.Macro.save());
+                this.updateMacroView();
             })
             .setChildOf(BottomControl);
 
@@ -153,27 +214,33 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setChildOf(AddEmptyRow);
     },
 
-    updateInputList() {
-        this.InputListScroll.clearChildren();
+    updateMacroList() {
+        this.MacroListScroll.clearChildren();
 
-        Command.ALL.forEach(it => {
-            InputCard(it.name, it.aliases).setChildOf(this.InputListScroll);
-        });
+        Macro.GetSavedNames().forEach(it => {
+            MacroCard(it, newMacro => {
+                this.Macro = newMacro;
+                this.onMacroUpdate(this.Macro);
+                this.updateMacroView();
+            }).setChildOf(this.MacroListScroll);
+        })
     },
 
-    updateTickList() {
+    updateMacroView() {
         this.TicksScroller.clearChildren();
+
+        this.MacroNameTitle.setText(this.Macro.name);
 
         this.Macro.ticks.forEach((it, index) => {
             TickRow(it, index, newVal => {
                 if (newVal == null) {
                     this.Macro.removeTick(index);
-                    this.onMacroUpdate(this.Macro);
-                    return this.updateTickList();
+                    this.onMacroUpdate(this.Macro.save());
+                    return this.updateMacroView();
                 }
 
                 this.Macro.ticks[index] = newVal;
-                this.onMacroUpdate(this.Macro);
+                this.onMacroUpdate(this.Macro.save());
             }).setChildOf(this.TicksScroller);
         })
     },
@@ -187,8 +254,8 @@ export const Editor = new JavaAdapter(WindowScreen, {
         this.Keys = loadKeys();
         this.onMacroUpdate = onMacroUpdate;
 
-        this.updateTickList();
-        this.MacroNameTitle.setText(this.Macro.name);
+        this.updateMacroList();
+        this.updateMacroView();
 
         GuiHandler.openGui(this);
     },

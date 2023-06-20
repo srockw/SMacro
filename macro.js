@@ -34,6 +34,16 @@ export default class Macro {
     /**
      * @param {string} name 
      */
+    static ensureValidMacroName(name) {
+        if (!name || name.length < 1) {
+            name = `macro${Macro.GetSavedNames().length}`;
+        }
+        return name;
+    }
+
+    /**
+     * @param {string} name 
+     */
     constructor(name) {
         this.name = name;
         this.ticks = [];
