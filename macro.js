@@ -20,7 +20,7 @@ export default class Macro {
         }
 
         return dir.listFiles()
-            .filter(file => file.getName().endsWith(".json"))
+            .filter(file => file.getName().endsWith(".json") && file.getName() != "Cached Macro.json")
             .map(file => file.getName().replace(".json", ""));
     }
 

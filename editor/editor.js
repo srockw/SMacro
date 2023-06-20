@@ -150,13 +150,6 @@ export const Editor = new JavaAdapter(WindowScreen, {
 
                 macroNameState = comp.getText();
             })
-            .onFocusLost((comp) => {
-                if (!macroNameState) {
-                    const name = Macro.ensureValidMacroName(macroNameState);
-                    macroNameState = name;
-                    comp.setText(name);
-                }
-            })
             .setChildOf(TextInputContainer);
 
         const SaveButton = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
@@ -171,6 +164,11 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .onMouseEnter(comp => animateColorTransition(comp, SAVE_HOVER_COLOR))
             .onMouseLeave(comp => animateColorTransition(comp, SAVE_COLOR))
             .onMouseClick(() => {
+                if (!macroNameState) {
+                    macroNameState = Macro.ensureValidMacroName(macroNameState);
+                }
+                
+                MacroNameInput.setText(macroNameState);
                 this.Macro.setName(macroNameState).save();
                 this.onMacroUpdate(this.Macro);
                 this.updateMacroList();
@@ -203,7 +201,7 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .onMouseLeave(comp => animateColorTransition(comp, ADD_COLOR))
             .onMouseClick(() => {
                 this.Macro.addTick();
-                this.onMacroUpdate(this.Macro.save());
+                this.onMacroUpdate(this.Macro);
                 this.updateMacroView();
             })
             .setChildOf(BottomControl);
@@ -235,12 +233,12 @@ export const Editor = new JavaAdapter(WindowScreen, {
             TickRow(it, index, newVal => {
                 if (newVal == null) {
                     this.Macro.removeTick(index);
-                    this.onMacroUpdate(this.Macro.save());
+                    this.onMacroUpdate(this.Macro);
                     return this.updateMacroView();
                 }
 
                 this.Macro.ticks[index] = newVal;
-                this.onMacroUpdate(this.Macro.save());
+                this.onMacroUpdate(this.Macro);
             }).setChildOf(this.TicksScroller);
         })
     },
