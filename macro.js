@@ -1,7 +1,36 @@
-import { leftClick, loadKeys, rightClick, shiftPlayerPitch, shiftPlayerYaw } from "./utils";
+import { MODULE_NAME, SAVED_MACROS_PATH, leftClick, loadKeys, rightClick, shiftPlayerPitch, shiftPlayerYaw } from "./utils";
 import TickBuilder from "./tickBuilder";
+import PogObject from "../PogData";
+const File = Java.type("java.io.File");
 
 export default class Macro {
+    /**
+     * @returns {string[]} Saved macro names
+     */
+    static GetSavedNames() {
+        const dir = new File(SAVED_MACROS_PATH);
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        if (!dir.isDirectory()) {
+            dir.delete();
+            dir.mkdirs();
+        }
+
+        return dir.listFiles()
+            .filter(file => file.getName().endsWith(".json"))
+            .map(file => file.getName().replace(".json", ""));
+    }
+
+    static GetPogObject(name, ticks = []) {
+        return new PogObject(MODULE_NAME, {
+            name: name,
+            ticks
+        }, `./macros/${name}.json`);
+    }
+
     /**
      * @param {string} name 
      */
@@ -18,12 +47,37 @@ export default class Macro {
         return this;
     }
 
+    /**
+     * @param {string} name 
+     */
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+
     isEmpty() {
         return this.ticks.length < 1;
     }
 
     addTick() {
         this.ticks.push(new TickBuilder().build());
+        return this;
+    }
+
+    save() {
+        const object = Macro.GetPogObject(this.name, this.ticks);
+        object.ticks = this.ticks;
+        object.save();
+        return this;
+    }
+
+    /**
+     * @param {string} name 
+     */
+    load() {
+        if (!Macro.GetSavedNames().includes(this.name)) return this;
+        this.ticks = this.ticks.concat(Macro.GetPogObject(this.name).ticks);
+        return this;
     }
 
     removeTick(index) {

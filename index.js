@@ -46,6 +46,26 @@ new SillyCommand("smacro")
 
         editor() {
             Editor.open(cachedMacro, it => cachedMacro = it);
+        },
+
+        save(name) { 
+            if (!name || name.length < 1) {
+                const names = Macro.GetSavedNames();
+                name = `macro${names.length}`;
+            }
+
+            cachedMacro.setName(name).save();
+            ChatLib.chat(`&aSaved macro with name '${name}'`);
+        },
+
+        load(name) {
+            const macroName = Macro.GetSavedNames().find(it => it == name);
+
+            if (!macroName) 
+                return ChatLib.chat(`&c'${name}' is not a valid name.`);
+
+            cachedMacro = new Macro(macroName).load();
+            ChatLib.chat(`&aLoaded macro '${name}'`);
         }
     })
     .setGlobalDefault(() => ChatLib.chat("&cInvalid command."))

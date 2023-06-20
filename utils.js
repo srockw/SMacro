@@ -3,6 +3,9 @@ import TickBuilder from "./tickBuilder";
 import { f as fields, m as methods } from "../mappings/mappings";
 import { Animations, ConstantColorConstraint, animate } from "../Elementa";
 
+export const MODULE_NAME = "SMacro";
+export const SAVED_MACROS_PATH = `${Config.modulesFolder}/${MODULE_NAME}/macros`;
+
 /**
  * @param {(tick: TickBuilder, index: number) => TickBuilder} tickModifier 
  * @param {number} defaultDuration

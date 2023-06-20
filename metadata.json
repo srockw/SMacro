@@ -4,5 +4,5 @@
   "entry": "index.js",
   "version": "0.0.1",
   "description": "Tool for creating MC macros, meant for Parkour.",
-  "requires": ["sillycommand", "mappings", "Elementa"]
+  "requires": ["sillycommand", "mappings", "Elementa", "PogData"]
 }
