@@ -6,15 +6,19 @@
 
 To use this module you need to have [ChatTriggers](https://www.chattriggers.com/) installed. Download the `.jar` from their website and install it like any other Forge mod.
 
-Next step is to download the source code of this repository, go to the top of the page, big green button that says `<> Code`, click on it, then click on Download ZIP.
+Next step is to download the source code of this repository, go to the top of the page, big green button that says `Code`, click on it, then click on Download ZIP.
 
 Extract this ZIP in your `modules` folder, which can be accessed by doing `/ct files` ingame or going to `./minecraft/config/ChatTriggers/modules`.
+
+Rename the extracted folder to `SMacro` and delete the ZIP file from before.
 
 The end result should be as follows:
 
 `./minecraft/config/ChatTriggers/modules/SMacro`
 
 Where `SMacro` is a directory containing files such as `metadata.json` and `index.js`
+
+After doing this, use the command `/ct load` ingame to reload ChatTriggers and it should work.
 
 # Features
 
