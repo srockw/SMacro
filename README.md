@@ -87,3 +87,7 @@ The available extensions are the following:
 - Rex bwmm: `/smacro run wj.s(12) w.s sj.wa s(11)`
 
 - 45bwmm: `/smacro run wj.sd(12) w.sd sj.wa(12,10) sj(1,-45) s.wa(13,45)`
+
+# Notes
+
+- Currently the only way to delete macros is by deleting them from the folder itself. Do `/ct files`, go to `modules/SMacro/macros` and delete the one you want.
