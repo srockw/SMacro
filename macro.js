@@ -90,6 +90,14 @@ export default class Macro {
         return this;
     }
 
+    delete() {
+        const file = new File(SAVED_MACROS_PATH + "/" + this.name + ".json");
+        if (file.exists()) {
+            file.delete();
+        }
+        return this;
+    }
+
     removeTick(index) {
         this.ticks = this.ticks.filter((_, i) => i != index);
     }

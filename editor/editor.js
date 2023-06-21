@@ -217,9 +217,13 @@ export const Editor = new JavaAdapter(WindowScreen, {
 
         Macro.GetSavedNames().forEach(it => {
             MacroCard(it, newMacro => {
-                this.Macro = newMacro;
-                this.onMacroUpdate(this.Macro);
-                this.updateMacroView();
+                if (newMacro instanceof Macro) {
+                    this.Macro = newMacro;
+                    this.onMacroUpdate(this.Macro);
+                    this.updateMacroView();
+                }
+
+                this.updateMacroList();
             }).setChildOf(this.MacroListScroll);
         })
     },

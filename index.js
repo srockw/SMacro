@@ -63,6 +63,16 @@ new SillyCommand("smacro")
 
             cachedMacro = cachedMacro.setName(macroName).load();
             ChatLib.chat(`&aLoaded macro '${macroName}'`);
+        },
+
+        delete(name) {
+            const macroName = Macro.GetSavedNames().find(it => it == name);
+
+            if (!macroName) 
+                return ChatLib.chat(`&c'${name}' is not a valid name.`);
+
+            new Macro(macroName).delete();
+            ChatLib.chat(`&cDeleted macro '${macroName}'`);
         }
     })
     .setGlobalDefault(() => ChatLib.chat("&cInvalid command."))
