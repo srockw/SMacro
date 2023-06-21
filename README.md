@@ -36,7 +36,7 @@ Currently this command has the following arguments:
 
 `()` means optional argument.
 
-- `/smacro run <args>` where args is a list of actions separated by spaces
+- `/smacro run <args>` where args is a list of actions separated by spaces. The macro will stop when the chat is opened or the USE key is pressed (Right Click by default)
 
 - `/smacro list` will list all the available actions
 

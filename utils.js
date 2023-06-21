@@ -92,3 +92,7 @@ export function animateColorTransition(component, colorTo) {
         )
     })
 }
+
+export function isRightClickDown() {
+    return Client.getKeyBindFromDescription("key.use").isKeyDown();
+}

@@ -1,4 +1,4 @@
-import { MODULE_NAME, SAVED_MACROS_PATH, leftClick, loadKeys, rightClick, shiftPlayerPitch, shiftPlayerYaw } from "./utils";
+import { MODULE_NAME, SAVED_MACROS_PATH, isRightClickDown, leftClick, loadKeys, rightClick, shiftPlayerPitch, shiftPlayerYaw } from "./utils";
 import TickBuilder from "./tickBuilder";
 import PogObject from "../PogData";
 const File = Java.type("java.io.File");
@@ -108,7 +108,11 @@ export default class Macro {
         let currentTick = 0;
 
         const trigger = register("tick", () => {
-            if (currentTick >= this.ticks.length) {
+            if (
+                currentTick >= this.ticks.length ||
+                isRightClickDown() ||
+                Client.isInChat()
+            ) {
                 // End the macro.
                 this.keys.forEach(it => it.setState(false));
                 return trigger.unregister();
