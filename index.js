@@ -55,7 +55,7 @@ new SillyCommand("smacro")
             ChatLib.chat(`&aSaved macro with name '${name}'`);
         },
 
-        load(name) {
+        load([name]) {
             const macroName = Macro.GetSavedNames().find(it => it == name);
 
             if (!macroName) 
@@ -65,7 +65,7 @@ new SillyCommand("smacro")
             ChatLib.chat(`&aLoaded macro '${macroName}'`);
         },
 
-        delete(name) {
+        delete([name]) {
             const macroName = Macro.GetSavedNames().find(it => it == name);
 
             if (!macroName) 
