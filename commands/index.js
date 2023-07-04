@@ -37,6 +37,7 @@ export const Stopjump = createSimpleCommand(
 
 // Complex commands
 export const sprintjump45 = new Command((duration = 1, shift = 0) => {
+    shift = parseFloat(shift);
     const main = [];
 
     for (let i = 0; i < duration; i++) {
@@ -52,6 +53,10 @@ export const sprintjump45 = new Command((duration = 1, shift = 0) => {
         
         if (i >= 1) {
             tick.setA(true);
+        }
+
+        if (i == duration - 1) {
+            tick.setYawTurn(-45 - shift);
         }
 
         main.push(tick);
