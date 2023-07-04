@@ -1,4 +1,21 @@
 export default class TickBuilder {
+    static fromArray(array) {
+        if (array.length < 11) return new TickBuilder();
+
+        return new TickBuilder()
+            .setW(array[0])
+            .setA(array[1])
+            .setS(array[2])
+            .setD(array[3])
+            .setSprint(array[4])
+            .setSneak(array[5])
+            .setJump(array[6])
+            .setLeftClick(array[7])
+            .setRightClick(array[8])
+            .setYawTurn(array[9])
+            .setPitchTurn(array[10]);
+    }
+
     constructor() {
         this.clear();
     }

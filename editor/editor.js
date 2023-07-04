@@ -193,9 +193,12 @@ export const Editor = new JavaAdapter(WindowScreen, {
 
         const AddEmptyRow = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
             .setX(new CenterConstraint())
-            .setY(new CenterConstraint())
+            .setY(FLOAT_PADDING.pixels())
             .setWidth((90).percent())
-            .setHeight((90).percent())
+            .setHeight(new SubtractiveConstraint(
+                (50).percent(),
+                FLOAT_PADDING.pixels()
+            ))
             .setColor(ADD_COLOR)
             .onMouseEnter(comp => animateColorTransition(comp, ADD_HOVER_COLOR))
             .onMouseLeave(comp => animateColorTransition(comp, ADD_COLOR))
@@ -210,6 +213,29 @@ export const Editor = new JavaAdapter(WindowScreen, {
             .setX(new CenterConstraint())
             .setY(new CenterConstraint())
             .setChildOf(AddEmptyRow);
+
+        const DupeLastRow = new UIRoundedRectangle(ROUNDED_RADIUS / 2)
+            .setX(new CenterConstraint())
+            .setY(new SiblingConstraint(FLOAT_PADDING / 2))
+            .setWidth((90).percent())
+            .setHeight(new SubtractiveConstraint(
+                new FillConstraint(),
+                (FLOAT_PADDING * 2).pixels()
+            ))
+            .setColor(ADD_COLOR)
+            .onMouseEnter(comp => animateColorTransition(comp, ADD_HOVER_COLOR))
+            .onMouseLeave(comp => animateColorTransition(comp, ADD_COLOR))
+            .onMouseClick(() => {
+                this.Macro.duplicateLast();
+                this.onMacroUpdate(this.Macro);
+                this.updateMacroView();
+            })
+            .setChildOf(BottomControl);
+
+        new UIText("Duplicate last row")
+            .setX(new CenterConstraint())
+            .setY(new CenterConstraint())
+            .setChildOf(DupeLastRow);
     },
 
     updateMacroList() {

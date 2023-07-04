@@ -74,6 +74,14 @@ export default class Macro {
         return this;
     }
 
+    duplicateLast() {
+        const last = this.ticks[this.ticks.length - 1];
+        if (last) {
+            this.ticks.push(TickBuilder.fromArray(last).build());
+        }
+        return this;
+    }
+
     save() {
         const object = Macro.GetPogObject(this.name, this.ticks);
         object.ticks = this.ticks;
