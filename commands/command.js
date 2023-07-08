@@ -19,6 +19,7 @@ export default class Command {
         this.aliases = aliases;
         this.action = action;
         this.names = [this.name].concat(this.aliases);
+        this.applyExtension = true;
 
         Command.ALL.push(this);
         Command.ALL.sort((a, b) => b.name.length - a.name.length);
@@ -32,6 +33,12 @@ export default class Command {
         if (!Command.REGEX.test(input.toLowerCase())) return false;
         const [_, name] = Command.REGEX.exec(input.toLowerCase());
         return this.names.includes(name);
+    }
+
+    shouldApplyExtension(bool) {
+        if (typeof bool != "boolean") return this;
+        this.applyExtension = bool;
+        return this;
     }
 
     /**
@@ -48,6 +55,6 @@ export default class Command {
 
         const args = argsText?.split(",")?.filter(it => it && parseFloat(it)) ?? [];
 
-        return this.action(...args).map(it => extension.apply(it));
+        return this.action(...args).map(it => this.applyExtension ? extension.apply(it) : it);
     }
 }

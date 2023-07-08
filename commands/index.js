@@ -7,7 +7,7 @@ export const Walk = createSimpleCommand(tick => tick, 1, 0, "walk", "w");
 export const Sprint = createSimpleCommand(tick => tick.setSprint(true), 1, 0, "sprint", "s");
 export const Sneak = createSimpleCommand(tick => tick.setSneak(true), 1, 0, "sneak", "sn");
 export const Sneaksprint = createSimpleCommand(tick => tick.setSneak(true).setSprint(true), 1, 0, "sneaksprint", "sns");
-export const Stop = createSimpleCommand(tick => tick.clear(), 1, 0, "stop", "st");
+export const Stop = createSimpleCommand(tick => tick.clear(), 1, 0, "stop", "st").shouldApplyExtension(false);
 
 // Jump commands
 export const Walkjump = createSimpleCommand(
@@ -33,7 +33,7 @@ export const Sneaksprintjump = createSimpleCommand(
 export const Stopjump = createSimpleCommand(
     (tick, index) => index == 0 ? tick.clear().setJump(true) : tick.clear(),
     1, 0, "stopjump", "stj"
-);
+).shouldApplyExtension(false);
 
 // Complex commands
 export const sprintjump45 = new Command((duration = 1, shift = 0) => {
